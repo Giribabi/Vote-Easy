@@ -10,6 +10,7 @@ const castVote = asyncHandler(async (req, res) => {
     }
     const userExists = await User.findOne({ _id: voterId });
     const voteCasted = await Vote.findOne({ voterId });
+
     if (!userExists) {
         res.status(400);
         throw new Error("No such user, vote unsuccessful");
@@ -22,7 +23,7 @@ const castVote = asyncHandler(async (req, res) => {
         voterId,
         votedFor,
     });
-    console.log(newVote);
+
     if (newVote) {
         res.status(201).json({
             votedFor: newVote.votedFor,
@@ -35,4 +36,33 @@ const castVote = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { castVote };
+const voteCount = asyncHandler(async (req, res) => {
+    const results = await Vote.aggregate([
+        {
+            $group: {
+                _id: "$votedFor",
+                count: { $sum: 1 },
+            },
+        },
+        {
+            $lookup: {
+                from: "candidates",
+                localField: "_id",
+                foreignField: "name",
+                as: "candidateDetails",
+            },
+        },
+        {
+            $unwind: "$candidateDetails",
+        },
+        {
+            $group: {
+                _id: "$candidateDetails.allianceName",
+                totalVotes: { $sum: "$count" },
+            },
+        },
+    ]);
+    res.send(results);
+});
+
+module.exports = { castVote, voteCount };
