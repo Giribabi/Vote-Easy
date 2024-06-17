@@ -14,6 +14,7 @@ const mongoose = require("mongoose");
 
 const userRoutes = require("./routes/userRoutes");
 const candidateRoutes = require("./routes/candidateRoutes");
+const voteRoutes = require("./routes/votesRoutes");
 
 console.log("Your server started");
 
@@ -54,5 +55,6 @@ connectDB();
 
 app.use("/api/user", userRoutes);
 app.use("/api/candidate", candidateRoutes);
+app.use("/api/vote", voteRoutes);
 
 app.listen(3030);

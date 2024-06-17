@@ -3,7 +3,7 @@ const router = express.Router();
 const {
     authCandidate,
     registerCandidate,
-} = require("../controllers/voteControllers");
+} = require("../controllers/candidateControllers");
 
 router.post("/", registerCandidate);
 

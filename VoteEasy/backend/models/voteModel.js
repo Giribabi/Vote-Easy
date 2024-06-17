@@ -2,8 +2,12 @@ const mongoose = require("mongoose");
 
 const voteModel = mongoose.Schema(
     {
-        voter: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        votedFor: { type: mongoose.Schema.Types.ObjectId, ref: "Candidate" },
+        voterId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        votedFor: { type: String, ref: "Candidate", required: true },
     },
     { timestamps: true }
 );

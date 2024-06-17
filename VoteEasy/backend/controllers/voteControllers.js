@@ -1,53 +1,38 @@
 const asyncHandler = require("express-async-handler");
-const Candidate = require("../models/candidateModel");
-const generateToken = require("../config/generateToken");
+const Vote = require("../models/voteModel");
+const User = require("../models/userModel");
 
-const authCandidate = asyncHandler(async (req, res) => {
-    const { email, password, allianceName } = req.body;
-    const currentCandidate = await Candidate.findOne({ email });
-    if (currentCandidate && (await currentCandidate.matchPassword(password))) {
-        res.json({
-            _id: currentCandidate._id,
-            name: currentCandidate.name,
-            email: currentCandidate.email,
-            allianceName: currentCandidate.allianceName,
-            token: generateToken(currentCandidate._id),
-        });
-    } else {
-        res.status(401);
-        throw new Error("Check your login credentials");
-    }
-});
-
-const registerCandidate = asyncHandler(async (req, res) => {
-    const { name, email, password, allianceName } = req.body;
-    if (!name || !email || !password || !allianceName) {
+const castVote = asyncHandler(async (req, res) => {
+    const { voterId, votedFor } = req.body;
+    if (!voterId || !votedFor) {
         res.status(400);
-        throw new Error("Enter all the fields");
+        throw new Error("Invalid vote, submit the details correctly");
     }
-    const candidateExists = await Candidate.findOne({ email });
-    if (candidateExists) {
+    const userExists = await User.findOne({ _id: voterId });
+    const voteCasted = await Vote.findOne({ voterId });
+    if (!userExists) {
         res.status(400);
-        throw new Error("User exists");
+        throw new Error("No such user, vote unsuccessful");
     }
-    const newCandidate = await Candidate.create({
-        name,
-        email,
-        password,
-        allianceName,
+    if (voteCasted) {
+        res.status(400);
+        throw new Error("Vote casted already");
+    }
+    const newVote = await Vote.create({
+        voterId,
+        votedFor,
     });
-    if (newCandidate) {
+    console.log(newVote);
+    if (newVote) {
         res.status(201).json({
-            _id: newCandidate._id,
-            name: newCandidate.name,
-            email: newCandidate.email,
-            allianceName: newCandidate.allianceName,
-            token: generateToken(newCandidate._id),
+            votedFor: newVote.votedFor,
+            voterId: newVote.voterId,
         });
+        // .json("Vote casted successfully🎊");
     } else {
         res.status(400);
-        throw new Error("Failed to create user");
+        throw new Error("Vote unsuccessful, contact the admin");
     }
 });
 
-module.exports = { registerCandidate, authCandidate };
+module.exports = { castVote };
