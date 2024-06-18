@@ -1,0 +1,14 @@
+.header {
+    margin: 5px;
+    padding: 50px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.stepper {
+    width: 80vw;
+}
+.app-heading {
+    font-family: "Poppins", "Helvetica Neue", Arial, sans-serif;
+}
