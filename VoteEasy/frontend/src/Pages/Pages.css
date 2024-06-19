@@ -1,3 +1,29 @@
 .page {
     width: 78vw;
+    border: 1px solid green;
+    border-radius: 25px;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.home-applogo-container {
+    padding: 5px;
+    margin: 5px;
+}
+.intro-content {
+    font-size: 24px;
+    font-weight: 600;
+    font-style: italic;
+    max-width: 50%;
+    padding: 5px;
+    position: relative;
+    bottom: 40px;
+}
+.continue-btn {
+    padding-top: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 }

@@ -15,9 +15,10 @@ import {
 import "./Header.css";
 
 const steps = [
-    { title: "Home", description: "About VoteEasy" },
-    { title: "Authentication", description: "Signin / Signin" },
-    { title: "Vote", description: "Cast your vote" },
+    { title: "Home" },
+    { title: "Authentication" },
+    { title: "Vote" },
+    { title: "Results" },
 ];
 
 function Header() {
@@ -28,7 +29,7 @@ function Header() {
     return (
         <div className="header">
             <div className="app-heading">VoteEasy</div>
-            <Stepper index={activeStep} className="stepper">
+            <Stepper index={activeStep} colorScheme="green" className="stepper">
                 {steps.map((step, index) => (
                     <Step key={index}>
                         <StepIndicator>
