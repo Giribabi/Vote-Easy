@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Step,
@@ -12,6 +12,7 @@ import {
     Stepper,
     useSteps,
 } from "@chakra-ui/react";
+import { useLocation } from "react-router-dom";
 import "./Header.css";
 
 const steps = [
@@ -21,11 +22,36 @@ const steps = [
     { title: "Results" },
 ];
 
-function Header() {
-    const { activeStep } = useSteps({
-        index: 1,
+function Header({ status }) {
+    // use status to know whether really the user has completed the before steps, useContext
+    const location = useLocation();
+
+    useEffect(() => {
+        switch (location.pathname.slice(1)) {
+            case "":
+                setActiveStep(0);
+                break;
+            case "auth":
+                setActiveStep(1);
+                break;
+            case "vote":
+                setActiveStep(2);
+                break;
+            case "results":
+                setTimeout(() => {
+                    setActiveStep(4);
+                }, 4000);
+                break;
+            default:
+                setActiveStep(0);
+        }
+    }, [location]);
+
+    const { activeStep, setActiveStep } = useSteps({
+        index: 0,
         count: steps.length,
     });
+
     return (
         <div className="header">
             <div className="app-heading">VoteEasy</div>

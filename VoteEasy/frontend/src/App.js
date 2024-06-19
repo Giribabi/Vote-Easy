@@ -4,6 +4,7 @@ import Home from "./Pages/Home.jsx";
 import Auth from "./Pages/Auth.jsx";
 import Vote from "./Pages/Vote.jsx";
 import AppLayout from "./AppLayout/AppLayout";
+import Results from "./Pages/Results.jsx";
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                         <Route index element={<Home />} />
                         <Route path="auth" element={<Auth />} />
                         <Route path="vote" element={<Vote />} />
+                        <Route path="results" element={<Results />} />
                     </Route>
                 </Routes>
             </BrowserRouter>

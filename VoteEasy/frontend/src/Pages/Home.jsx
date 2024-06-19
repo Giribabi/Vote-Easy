@@ -1,10 +1,17 @@
 import React from "react";
 import "./Pages.css";
 import AppLogo from "../Components/AppLogo/AppLogo";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 
 function Home() {
+    const navigate = useNavigate();
+
+    const handleContinue = () => {
+        navigate("/auth");
+    };
+
     return (
         <div className="page">
             <div className="home-applogo-container">
@@ -21,6 +28,7 @@ function Home() {
                         rightIcon={<ArrowForwardIcon />}
                         colorScheme="green"
                         variant="outline"
+                        onClick={handleContinue}
                     >
                         Continue
                     </Button>
