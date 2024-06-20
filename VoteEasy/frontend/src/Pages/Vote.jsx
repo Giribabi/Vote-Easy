@@ -2,7 +2,7 @@ import React from "react";
 import "./Pages.css";
 import { Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, ArrowBackIcon } from "@chakra-ui/icons";
 
 function Vote() {
     const navigate = useNavigate();
@@ -16,9 +16,18 @@ function Vote() {
     return (
         <div className="page">
             Vote
-            <div className="continue-btn">
+            <div className="continue-btn vote-btn">
                 <Button
                     rightIcon={<ArrowForwardIcon />}
+                    colorScheme="green"
+                    variant="solid"
+                >
+                    Vote
+                </Button>
+            </div>
+            <div className="continue-btn">
+                <Button
+                    leftIcon={<ArrowBackIcon />}
                     colorScheme="green"
                     variant="outline"
                     onClick={handleGoBack}

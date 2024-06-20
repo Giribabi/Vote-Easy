@@ -8,7 +8,6 @@ const authUser = asyncHandler(async (req, res) => {
     if (currentUser && (await currentUser.matchPassword(password))) {
         res.json({
             _id: currentUser._id,
-            name: currentUser.name,
             email: currentUser.email,
             token: generateToken(currentUser._id),
         });
@@ -19,8 +18,8 @@ const authUser = asyncHandler(async (req, res) => {
 });
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
+    const { email, password } = req.body;
+    if (!email || !password) {
         res.status(400);
         throw new Error("Enter all the fields");
     }
@@ -30,14 +29,12 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error("User exists");
     }
     const newUser = await User.create({
-        name,
         email,
         password,
     });
     if (newUser) {
         res.status(201).json({
             _id: newUser._id,
-            name: newUser.name,
             email: newUser.email,
             token: generateToken(newUser._id),
         });

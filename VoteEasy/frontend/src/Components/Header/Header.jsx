@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     Box,
     Step,
@@ -13,6 +13,7 @@ import {
     useSteps,
 } from "@chakra-ui/react";
 import { useLocation } from "react-router-dom";
+import { StatusContext } from "../../Context/Context";
 import "./Header.css";
 
 const steps = [
@@ -25,25 +26,21 @@ const steps = [
 function Header({ status }) {
     // use status to know whether really the user has completed the before steps, useContext
     const location = useLocation();
+    const { setStatus } = useContext(StatusContext);
 
     useEffect(() => {
-        switch (location.pathname.slice(1)) {
-            case "":
-                setActiveStep(0);
-                break;
-            case "auth":
-                setActiveStep(1);
-                break;
-            case "vote":
-                setActiveStep(2);
-                break;
-            case "results":
-                setTimeout(() => {
-                    setActiveStep(4);
-                }, 4000);
-                break;
-            default:
-                setActiveStep(0);
+        const currentLocation = location.pathname.slice(1);
+        if (currentLocation === "auth") {
+            setActiveStep(1);
+        } else if (currentLocation === "vote") {
+            setActiveStep(2);
+        } else if (currentLocation === "results") {
+            setActiveStep(3);
+            setTimeout(() => {
+                setActiveStep(4);
+            }, 2000);
+        } else {
+            setActiveStep(0);
         }
     }, [location]);
 

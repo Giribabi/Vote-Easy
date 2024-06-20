@@ -15,6 +15,7 @@ const mongoose = require("mongoose");
 const userRoutes = require("./routes/userRoutes");
 const candidateRoutes = require("./routes/candidateRoutes");
 const voteRoutes = require("./routes/votesRoutes");
+const { protect } = require("./auth/middleware");
 
 console.log("Your server started");
 
@@ -53,8 +54,11 @@ async function connectDB() {
 }
 connectDB();
 
-app.use("/api/user", userRoutes);
-app.use("/api/candidate", candidateRoutes);
-app.use("/api/vote", voteRoutes);
+app.use("/api/auth", userRoutes);
+app.use("/api/candidate", protect, candidateRoutes);
+app.use("/api/vote", protect, voteRoutes);
+// app.use("/", (req, res) => {
+//     res.send("This is your VoteEasy server..");
+// });
 
 app.listen(3030);
