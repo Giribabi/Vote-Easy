@@ -15,7 +15,8 @@ import { ArrowBackIcon, ArrowForwardIcon, ArrowUpIcon } from "@chakra-ui/icons";
 function Auth() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [isLogin, setIsLogin] = useState(true);
+    const [isLogin, setIsLogin] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
     const toast = useToast();
@@ -31,6 +32,8 @@ function Auth() {
     };
 
     const handleSubmit = async (e) => {
+        setIsLoading(true);
+
         e.preventDefault();
         try {
             const config = {
@@ -47,7 +50,6 @@ function Auth() {
                     },
                     config
                 );
-                console.log("login", data);
                 localStorage.setItem("userInfo", JSON.stringify(data));
             } else {
                 const { data } = await axios.post(
@@ -58,9 +60,9 @@ function Auth() {
                     },
                     config
                 );
-                console.log("signup", data);
                 localStorage.setItem("userInfo", JSON.stringify(data));
             }
+            setIsLoading(false);
             toast({
                 title: isLogin
                     ? "Successfully Logged in"
@@ -75,6 +77,7 @@ function Auth() {
             handleContinue();
         } catch (error) {
             console.log(error);
+            setIsLoading(false);
             toast({
                 title: isLogin
                     ? "Error in logging in"
@@ -115,7 +118,10 @@ function Auth() {
                                 colorScheme="green"
                                 variant="solid"
                                 type="submit"
+                                isLoading={isLoading && !isLogin}
+                                loadingText="Signup"
                                 onClick={() => setIsLogin(false)}
+                                isDisabled={isLoading && isLogin}
                             >
                                 Signup
                             </Button>
@@ -124,6 +130,10 @@ function Auth() {
                                 colorScheme="green"
                                 variant="solid"
                                 type="submit"
+                                isLoading={isLoading && isLogin}
+                                loadingText="Login"
+                                onClick={() => setIsLogin(true)}
+                                isDisabled={isLoading && !isLogin}
                             >
                                 Login
                             </Button>

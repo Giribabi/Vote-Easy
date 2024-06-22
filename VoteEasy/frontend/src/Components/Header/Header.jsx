@@ -35,7 +35,9 @@ function Header() {
 
     useEffect(() => {
         setActiveStep(progress);
-        // const currentLocation = location.pathname.slice(1);
+        const currentLocation = location.pathname.slice(1);
+        if (currentLocation !== "") setActiveStep(Math.max(progress, 1));
+
         // if (
         //     currentLocation === "auth" ||
         //     currentLocation === "vote" ||
