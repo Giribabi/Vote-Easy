@@ -23,31 +23,36 @@ const steps = [
     { title: "Results" },
 ];
 
-function Header({ status }) {
+function Header() {
     // use status to know whether really the user has completed the before steps, useContext
     const location = useLocation();
-    const { setStatus } = useContext(StatusContext);
-
-    useEffect(() => {
-        const currentLocation = location.pathname.slice(1);
-        if (currentLocation === "auth") {
-            setActiveStep(1);
-        } else if (currentLocation === "vote") {
-            setActiveStep(2);
-        } else if (currentLocation === "results") {
-            setActiveStep(3);
-            setTimeout(() => {
-                setActiveStep(4);
-            }, 2000);
-        } else {
-            setActiveStep(0);
-        }
-    }, [location]);
+    const { progress } = useContext(StatusContext);
 
     const { activeStep, setActiveStep } = useSteps({
         index: 0,
         count: steps.length,
     });
+
+    useEffect(() => {
+        setActiveStep(progress);
+        // const currentLocation = location.pathname.slice(1);
+        // if (
+        //     currentLocation === "auth" ||
+        //     currentLocation === "vote" ||
+        //     currentLocation === "results"
+        // ) {
+        //     setActiveStep(1);
+        // } else if (status === "authorized") {
+        //     setActiveStep(2);
+        // } else if (status === "voted") {
+        //     setActiveStep(3);
+        //     setTimeout(() => {
+        //         setActiveStep(4);
+        //     }, 2000);
+        // } else {
+        //     setActiveStep(0);
+        // }
+    }, [location, progress, setActiveStep]);
 
     return (
         <div className="header">

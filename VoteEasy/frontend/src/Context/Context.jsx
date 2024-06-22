@@ -4,10 +4,10 @@ export const StatusContext = createContext();
 
 const StatusProvider = ({ children }) => {
     const backendUrl = "http://localhost:3030";
-    const [status, setStatus] = useState("");
+    const [progress, setProgress] = useState(0);
 
     return (
-        <StatusContext.Provider value={{ status, setStatus, backendUrl }}>
+        <StatusContext.Provider value={{ progress, setProgress, backendUrl }}>
             {children}
         </StatusContext.Provider>
     );

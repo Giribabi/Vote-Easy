@@ -10,21 +10,23 @@ import {
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { StatusContext } from "../Context/Context";
-import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, ArrowForwardIcon, ArrowUpIcon } from "@chakra-ui/icons";
 
 function Auth() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLogin, setIsLogin] = useState(true);
 
     const navigate = useNavigate();
     const toast = useToast();
-    const { setStatus, backendUrl } = useContext(StatusContext);
+    const { setProgress, backendUrl } = useContext(StatusContext);
 
     const handleGoBack = () => {
         navigate("/");
     };
 
     const handleContinue = () => {
+        // if(status==="authorized")
         navigate("/vote");
     };
 
@@ -36,29 +38,47 @@ function Auth() {
                     "Content-type": "application/json",
                 },
             };
-            const { data } = await axios.post(
-                `${backendUrl}/api/auth`,
-                {
-                    email,
-                    password,
-                },
-                config
-            );
+            if (isLogin) {
+                const { data } = await axios.post(
+                    `${backendUrl}/api/auth/login`,
+                    {
+                        email,
+                        password,
+                    },
+                    config
+                );
+                console.log("login", data);
+                localStorage.setItem("userInfo", JSON.stringify(data));
+            } else {
+                const { data } = await axios.post(
+                    `${backendUrl}/api/auth/signup`,
+                    {
+                        email,
+                        password,
+                    },
+                    config
+                );
+                console.log("signup", data);
+                localStorage.setItem("userInfo", JSON.stringify(data));
+            }
             toast({
-                title: "Successfully registered",
+                title: isLogin
+                    ? "Successfully Logged in"
+                    : "Successfully registered",
                 status: "success",
                 duration: "5000",
                 isClosable: true,
                 position: "top-left",
             });
-            localStorage.setItem("userInfo", JSON.stringify(data));
-            setStatus("authorized");
-            console.log(data);
-            navigate("/vote");
+
+            setProgress(2);
+            handleContinue();
         } catch (error) {
             console.log(error);
             toast({
-                title: "Error in registration",
+                title: isLogin
+                    ? "Error in logging in"
+                    : "Error in registration",
                 description: error.response.data.message,
                 status: "warning",
                 duration: "5500",
@@ -89,7 +109,16 @@ function Auth() {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </FormControl>
-                        <div className="continue-btn login-btn">
+                        <div className="continue-btn auth-btn">
+                            <Button
+                                rightIcon={<ArrowUpIcon />}
+                                colorScheme="green"
+                                variant="solid"
+                                type="submit"
+                                onClick={() => setIsLogin(false)}
+                            >
+                                Signup
+                            </Button>
                             <Button
                                 rightIcon={<ArrowForwardIcon />}
                                 colorScheme="green"
@@ -110,16 +139,6 @@ function Auth() {
                             onClick={handleGoBack}
                         >
                             Back
-                        </Button>
-                    </div>
-                    <div className="continue-btn">
-                        <Button
-                            rightIcon={<ArrowForwardIcon />}
-                            colorScheme="green"
-                            variant="outline"
-                            onClick={handleContinue}
-                        >
-                            Continue
                         </Button>
                     </div>
                 </div>

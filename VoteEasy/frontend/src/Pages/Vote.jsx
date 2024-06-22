@@ -10,6 +10,7 @@ function Vote() {
         navigate("/auth");
     };
     const handleContinue = () => {
+        // if(status==="voted")
         navigate("/results");
     };
 
