@@ -27,9 +27,11 @@
     flex-direction: row;
     justify-content: flex-end;
 }
-.auth-btn,
-.vote-btn {
+.auth-btn {
     justify-content: space-between;
+}
+.vote-btn {
+    justify-content: center;
 }
 .auth {
     width: 60%;

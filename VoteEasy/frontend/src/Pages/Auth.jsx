@@ -70,7 +70,7 @@ function Auth() {
                 status: "success",
                 duration: "5000",
                 isClosable: true,
-                position: "top-left",
+                position: "top",
             });
 
             setProgress(2);
@@ -86,7 +86,7 @@ function Auth() {
                 status: "warning",
                 duration: "5500",
                 isClosable: true,
-                position: "top-left",
+                position: "top",
             });
         }
     };
