@@ -2,8 +2,19 @@ const asyncHandler = require("express-async-handler");
 const Candidate = require("../models/candidateModel");
 const generateToken = require("../config/generateToken");
 
+const getCandidatesList = asyncHandler(async (req, res) => {
+    try {
+        const candidates = await Candidate.find();
+        res.send(candidates);
+    } catch (error) {
+        console.log(error);
+        res.status(400);
+        throw new Error(error.message);
+    }
+});
+
 const authCandidate = asyncHandler(async (req, res) => {
-    const { email, password, allianceName } = req.body;
+    const { email, password } = req.body;
     const currentCandidate = await Candidate.findOne({ email });
     if (currentCandidate && (await currentCandidate.matchPassword(password))) {
         res.json({
@@ -50,4 +61,4 @@ const registerCandidate = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { registerCandidate, authCandidate };
+module.exports = { registerCandidate, authCandidate, getCandidatesList };

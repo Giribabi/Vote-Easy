@@ -33,8 +33,15 @@
 .vote-btn {
     justify-content: center;
 }
-.auth {
+.auth,
+.vote {
     width: 60%;
+    max-width: 400px;
+}
+.candidates-list {
+    padding: 15px 25px;
+    max-height: 40vh;
+    overflow-y: scroll;
 }
 .card-footer {
     width: 100%;
@@ -42,4 +49,25 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+}
+.candidate-box {
+    font-size: 20px;
+    margin-left: 15px;
+}
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }

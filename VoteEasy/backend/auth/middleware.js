@@ -4,8 +4,7 @@ const asyncHandler = require("express-async-handler");
 
 const protect = asyncHandler(async (req, res, next) => {
     let token;
-    const secret = process.env.JSON_SECRET_TOKEN;
-
+    const secret = process.env.JWT_SECRET_TOKEN;
     if (
         req.headers.authorization &&
         req.headers.authorization.startsWith("Bearer")

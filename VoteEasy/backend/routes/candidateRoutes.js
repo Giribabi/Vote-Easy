@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const {
-    authCandidate,
     registerCandidate,
+    getCandidatesList,
 } = require("../controllers/candidateControllers");
 
 router.post("/", registerCandidate);
+router.get("/list", getCandidatesList);
 
 module.exports = router;

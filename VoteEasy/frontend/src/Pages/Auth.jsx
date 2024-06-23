@@ -68,7 +68,7 @@ function Auth() {
                     ? "Successfully Logged in"
                     : "Successfully registered",
                 status: "success",
-                duration: "5000",
+                duration: "3000",
                 isClosable: true,
                 position: "top",
             });
@@ -80,11 +80,10 @@ function Auth() {
             setIsLoading(false);
             toast({
                 title: isLogin
-                    ? "Error in logging in"
+                    ? "Check your login credentials"
                     : "Error in registration",
-                description: error.response.data.message,
                 status: "warning",
-                duration: "5500",
+                duration: "3000",
                 isClosable: true,
                 position: "top",
             });
