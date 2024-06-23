@@ -153,8 +153,15 @@ function Vote() {
                                                 <Radio value={candidate.name}>
                                                     <div className="candidate-box">
                                                         {candidate.allianceName +
-                                                            " @ " +
-                                                            candidate.name}
+                                                            " "}
+                                                        <span
+                                                            style={{
+                                                                color: "darkcyan",
+                                                            }}
+                                                        >
+                                                            @
+                                                        </span>
+                                                        {candidate.name}
                                                     </div>
                                                 </Radio>
                                             </div>
