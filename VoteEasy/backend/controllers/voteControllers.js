@@ -59,12 +59,51 @@ const voteCount = asyncHandler(async (req, res) => {
         },
         {
             $group: {
+                _id: "$candidateDetails.allianceName", // Group by alliance name
+                totalVotes: { $sum: "$count" }, // Sum the votes for each alliance
+            },
+        },
+        {
+            $project: {
+                _id: 0, // Exclude the _id field from the result
+                alliance: "$_id", // Include the alliance name
+                totalVotes: 1, // Include the totalVotes field
+            },
+        },
+    ]);
+
+    const winner = await Vote.aggregate([
+        {
+            $group: {
+                _id: "$votedFor",
+                count: { $sum: 1 },
+            },
+        },
+        {
+            $lookup: {
+                from: "candidates",
+                localField: "_id",
+                foreignField: "name",
+                as: "candidateDetails",
+            },
+        },
+        {
+            $unwind: "$candidateDetails",
+        },
+        {
+            $group: {
                 _id: "$candidateDetails.allianceName",
                 totalVotes: { $sum: "$count" },
             },
         },
+        {
+            $sort: { totalVotes: -1 }, // Sort by totalVotes descending
+        },
+        {
+            $limit: 1, // Limit to the top alliance with highest totalVotes
+        },
     ]);
-    res.send(results);
+    res.send({ results, winner });
 });
 
 module.exports = { castVote, voteCount };

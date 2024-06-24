@@ -1,26 +1,80 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Chart as Chartjs } from "chart.js/auto";
+import { Bar } from "react-chartjs-2";
 import "./Pages.css";
-import { Button } from "@chakra-ui/react";
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import WinnerBox from "../Components/WinnerBox/WinnerBox";
 
 function Results() {
-    const navigate = useNavigate();
-    const handleGoBack = () => {
-        navigate("/auth");
-    };
+    const [resultsChartData, setResultsChartData] = useState({});
+    const [winnerData, setWinnerData] = useState();
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchResults = async () => {
+            setIsLoading(true);
+            const userToken = JSON.parse(
+                localStorage.getItem("userInfo")
+            ).token;
+            const config = {
+                headers: {
+                    "Content-type": "application/json",
+                    Authorization: `Bearer ${userToken}`,
+                },
+            };
+            const { data } = await axios.get(
+                "http://localhost:3030/api/vote/votecount",
+                config
+            );
+            setResultsChartData({
+                labels: data.results.map((candidate) => candidate.alliance),
+                datasets: [
+                    {
+                        label: "Votes Per Alliance",
+                        backgroundColor: "rgba(75, 192, 192, 0.3)",
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        borderWidth: 1,
+                        hoverBackgroundColor: "rgba(75, 192, 192, 0.4)",
+                        hoverBorderColor: "rgba(75, 192, 192, 1)",
+                        data: data.results.map(
+                            (candidate) => candidate.totalVotes
+                        ),
+                    },
+                ],
+            });
+            setWinnerData(data.winner[0]);
+            setIsLoading(false);
+        };
+        fetchResults();
+    }, []);
+
     return (
         <div className="page">
-            Results
-            <div className="continue-btn">
-                <Button
-                    leftIcon={<ArrowBackIcon />}
-                    colorScheme="green"
-                    variant="outline"
-                    onClick={handleGoBack}
-                >
-                    Back
-                </Button>
+            <div className="result">
+                <div className="results-heading">
+                    <div className="heading">You have successfully voted</div>
+                    <div className="heading">See who's leading ✨</div>
+                </div>
+
+                <div className="results-container">
+                    {winnerData &&
+                    resultsChartData &&
+                    resultsChartData.labels ? (
+                        <div className="results-box">
+                            <div className="leading">
+                                <WinnerBox
+                                    alliance={winnerData._id}
+                                    votes={winnerData.totalVotes}
+                                />
+                            </div>
+                            <div className="votes-graph">
+                                <Bar data={resultsChartData} />
+                            </div>
+                        </div>
+                    ) : (
+                        "loading"
+                    )}
+                </div>
             </div>
         </div>
     );

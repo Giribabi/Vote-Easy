@@ -143,29 +143,30 @@ function Vote() {
                                     onChange={setVotedFor}
                                     value={votedFor}
                                 >
-                                    {!isLoading &&
-                                        candidates &&
-                                        candidates.map((candidate, index) => (
-                                            <div
-                                                className="candidate"
-                                                key={candidate + index}
-                                            >
-                                                <Radio value={candidate.name}>
-                                                    <div className="candidate-box">
-                                                        {candidate.allianceName +
-                                                            " "}
-                                                        <span
-                                                            style={{
-                                                                color: "darkcyan",
-                                                            }}
-                                                        >
-                                                            @
-                                                        </span>
-                                                        {candidate.name}
-                                                    </div>
-                                                </Radio>
-                                            </div>
-                                        ))}
+                                    {!isFetching
+                                        ? candidates &&
+                                          candidates.map((candidate, index) => (
+                                              <div
+                                                  className="candidate"
+                                                  key={candidate + index}
+                                              >
+                                                  <Radio value={candidate.name}>
+                                                      <div className="candidate-box">
+                                                          {candidate.allianceName +
+                                                              " "}
+                                                          <span
+                                                              style={{
+                                                                  color: "darkcyan",
+                                                              }}
+                                                          >
+                                                              @
+                                                          </span>
+                                                          {candidate.name}
+                                                      </div>
+                                                  </Radio>
+                                              </div>
+                                          ))
+                                        : "loading"}
                                 </RadioGroup>
                             </div>
                         </FormControl>
