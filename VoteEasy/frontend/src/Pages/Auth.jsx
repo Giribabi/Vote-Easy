@@ -27,7 +27,6 @@ function Auth() {
     };
 
     const handleContinue = () => {
-        // if(status==="authorized")
         navigate("/vote");
     };
 

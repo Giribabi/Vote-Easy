@@ -1,4 +1,36 @@
 .winner-box {
     margin: 10px;
     padding: 5px;
+    height: 180px;
+    overflow: hidden;
+}
+
+.confetti {
+    position: relative !important;
+    border-radius: 5px;
+    width: 100% !important;
+    height: 100%;
+}
+
+.winner-badge-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.winner-badge {
+    width: 130px;
+    height: 130px;
+    font-size: 20px;
+    font-weight: 900;
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+        "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 15px solid #fdde44;
+    border-radius: 50%;
+    position: relative;
+    bottom: 140px;
 }

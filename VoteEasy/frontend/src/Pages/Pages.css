@@ -54,14 +54,15 @@
     font-size: 20px;
     margin-left: 10px;
 }
-
+.result {
+    width: 90%;
+}
 .results {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
 }
-
 .results-heading {
     font-size: larger;
     font-weight: 600;
