@@ -7,6 +7,7 @@ import {
     RadioGroup,
     useToast,
     Spinner,
+    Divider,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -167,6 +168,7 @@ function Vote() {
                                                         {candidate.name}
                                                     </div>
                                                 </Radio>
+                                                <Divider />
                                             </div>
                                         ))
                                     ) : (
