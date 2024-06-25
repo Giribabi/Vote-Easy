@@ -43,6 +43,13 @@
     max-height: 40vh;
     overflow-y: scroll;
 }
+.loader-container {
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
 .card-footer {
     width: 100%;
     display: flex;

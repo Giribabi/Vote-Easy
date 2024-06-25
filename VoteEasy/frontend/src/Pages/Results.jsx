@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Chart as Chartjs } from "chart.js/auto";
 import { Bar } from "react-chartjs-2";
-import "./Pages.css";
+import { Spinner } from "@chakra-ui/react";
 import WinnerBox from "../Components/WinnerBox/WinnerBox";
+import "./Pages.css";
 
 function Results() {
     const [resultsChartData, setResultsChartData] = useState({});
@@ -72,7 +73,14 @@ function Results() {
                             </div>
                         </div>
                     ) : (
-                        "loading"
+                        <div className="loader-container">
+                            <Spinner
+                                size="xl"
+                                thickness="4px"
+                                speed="0.65s"
+                                color="green"
+                            />
+                        </div>
                     )}
                 </div>
             </div>

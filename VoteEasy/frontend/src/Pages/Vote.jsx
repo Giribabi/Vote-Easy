@@ -6,6 +6,7 @@ import {
     Radio,
     RadioGroup,
     useToast,
+    Spinner,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -143,30 +144,39 @@ function Vote() {
                                     onChange={setVotedFor}
                                     value={votedFor}
                                 >
-                                    {!isFetching
-                                        ? candidates &&
-                                          candidates.map((candidate, index) => (
-                                              <div
-                                                  className="candidate"
-                                                  key={candidate + index}
-                                              >
-                                                  <Radio value={candidate.name}>
-                                                      <div className="candidate-box">
-                                                          {candidate.allianceName +
-                                                              " "}
-                                                          <span
-                                                              style={{
-                                                                  color: "darkcyan",
-                                                              }}
-                                                          >
-                                                              @
-                                                          </span>
-                                                          {candidate.name}
-                                                      </div>
-                                                  </Radio>
-                                              </div>
-                                          ))
-                                        : "loading"}
+                                    {!isFetching ? (
+                                        candidates &&
+                                        candidates.map((candidate, index) => (
+                                            <div
+                                                className="candidate"
+                                                key={candidate + index}
+                                            >
+                                                <Radio value={candidate.name}>
+                                                    <div className="candidate-box">
+                                                        {candidate.allianceName +
+                                                            " "}
+                                                        <span
+                                                            style={{
+                                                                color: "darkcyan",
+                                                            }}
+                                                        >
+                                                            @
+                                                        </span>
+                                                        {candidate.name}
+                                                    </div>
+                                                </Radio>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="loader-container">
+                                            <Spinner
+                                                size="xl"
+                                                thickness="4px"
+                                                speed="0.65s"
+                                                color="green"
+                                            />
+                                        </div>
+                                    )}
                                 </RadioGroup>
                             </div>
                         </FormControl>

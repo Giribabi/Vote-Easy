@@ -11,5 +11,12 @@
     width: 80vw;
 }
 .app-heading {
-    font-family: "Poppins", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    font-family: serif;
+    padding: 1px;
+    border-bottom: 4px solid green;
+    border-radius: 2px;
+    margin: 3px;
+    margin-bottom: 8px;
 }
