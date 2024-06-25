@@ -153,8 +153,10 @@ function Vote() {
                                             >
                                                 <Radio value={candidate.name}>
                                                     <div className="candidate-box">
-                                                        {candidate.allianceName +
-                                                            " "}
+                                                        <b>
+                                                            {candidate.allianceName +
+                                                                " "}
+                                                        </b>
                                                         <span
                                                             style={{
                                                                 color: "darkcyan",
@@ -169,12 +171,16 @@ function Vote() {
                                         ))
                                     ) : (
                                         <div className="loader-container">
-                                            <Spinner
-                                                size="xl"
-                                                thickness="4px"
-                                                speed="0.65s"
-                                                color="green"
-                                            />
+                                            {isFetching ? (
+                                                <Spinner
+                                                    size="xl"
+                                                    thickness="4px"
+                                                    speed="0.65s"
+                                                    color="green"
+                                                />
+                                            ) : (
+                                                "No candidates have registered for the election"
+                                            )}
                                         </div>
                                     )}
                                 </RadioGroup>

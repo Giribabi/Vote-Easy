@@ -55,7 +55,7 @@ async function connectDB() {
 connectDB();
 
 app.use("/api/auth", userRoutes);
-app.use("/api/candidate", protect, candidateRoutes);
+app.use("/api/candidate", candidateRoutes);
 app.use("/api/vote", protect, voteRoutes);
 
 // app.use("/", (req, res) => {

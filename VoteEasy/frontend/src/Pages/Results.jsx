@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Chart as Chartjs } from "chart.js/auto";
 import { Bar } from "react-chartjs-2";
 import { Spinner } from "@chakra-ui/react";
 import WinnerBox from "../Components/WinnerBox/WinnerBox";
+import { StatusContext } from "../Context/Context";
 import "./Pages.css";
 
 function Results() {
+    const { setProgress } = useContext(StatusContext);
     const [resultsChartData, setResultsChartData] = useState({});
     const [winnerData, setWinnerData] = useState();
     const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +46,7 @@ function Results() {
                 ],
             });
             setWinnerData(data.winner[0]);
+            setProgress(4);
             setIsLoading(false);
         };
         fetchResults();
@@ -58,7 +61,8 @@ function Results() {
                 </div>
 
                 <div className="results-container">
-                    {winnerData &&
+                    {!isLoading &&
+                    winnerData &&
                     resultsChartData &&
                     resultsChartData.labels ? (
                         <div className="results-box">
@@ -74,12 +78,16 @@ function Results() {
                         </div>
                     ) : (
                         <div className="loader-container">
-                            <Spinner
-                                size="xl"
-                                thickness="4px"
-                                speed="0.65s"
-                                color="green"
-                            />
+                            {isLoading ? (
+                                <Spinner
+                                    size="xl"
+                                    thickness="4px"
+                                    speed="0.65s"
+                                    color="green"
+                                />
+                            ) : (
+                                "No votes yet."
+                            )}
                         </div>
                     )}
                 </div>
