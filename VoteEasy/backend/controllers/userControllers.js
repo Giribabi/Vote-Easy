@@ -75,6 +75,7 @@ const sendOtp = asyncHandler(async (req, res) => {
             text: `Your OTP code is: ${otp}`,
         };
 
+        transporter.sendMail(mailOptions);
         res.json({ message: "OTP sent", secret: secret.base32 });
     } catch (error) {
         console.error("Error sending OTP:", error);
