@@ -2,23 +2,36 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Chart as Chartjs } from "chart.js/auto";
 import { Bar } from "react-chartjs-2";
-import { Spinner } from "@chakra-ui/react";
+import { Button, Spinner, useToast } from "@chakra-ui/react";
 import WinnerBox from "../Components/WinnerBox/WinnerBox";
 import { StatusContext } from "../Context/Context";
 import "./Pages.css";
+import { useNavigate } from "react-router-dom";
 
 function Results() {
     const { setProgress } = useContext(StatusContext);
     const [resultsChartData, setResultsChartData] = useState({});
     const [winnerData, setWinnerData] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const toast = useToast();
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchResults = async () => {
+    const fetchResults = async () => {
+        try {
             setIsLoading(true);
-            const userToken = JSON.parse(
-                localStorage.getItem("userInfo")
-            ).token;
+            const user = JSON.parse(localStorage.getItem("userInfo"));
+            if (!user) {
+                navigate("/");
+                toast({
+                    title: "Complete your authentication",
+                    status: "warning",
+                    duration: "3000",
+                    isClosable: true,
+                    position: "top",
+                });
+                return;
+            }
+            const userToken = user.token;
             const config = {
                 headers: {
                     "Content-type": "application/json",
@@ -48,9 +61,26 @@ function Results() {
             setWinnerData(data.winner[0]);
             setProgress(4);
             setIsLoading(false);
-        };
+        } catch (error) {
+            setIsLoading(false);
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
         fetchResults();
     }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("userInfo");
+        toast({
+            title: "Successfully logged out",
+            status: "success",
+            duration: "3000",
+            isClosable: true,
+            position: "top",
+        });
+    };
 
     return (
         <div className="page">
@@ -90,6 +120,16 @@ function Results() {
                             )}
                         </div>
                     )}
+                </div>
+                <div className="results-footer">
+                    <Button
+                        className="logout-button"
+                        colorScheme="green"
+                        variant="solid"
+                        onClick={handleLogout}
+                    >
+                        Logout
+                    </Button>
                 </div>
             </div>
         </div>

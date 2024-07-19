@@ -41,9 +41,20 @@ function Vote() {
     useEffect(() => {
         const fetchCandidates = async () => {
             setIsFetching(true);
-            const userToken = JSON.parse(
-                localStorage.getItem("userInfo")
-            ).token;
+            const user = JSON.parse(localStorage.getItem("userInfo"));
+            if (!user) {
+                navigate("/");
+                toast({
+                    title: "Complete your authentication",
+                    status: "warning",
+                    duration: "3000",
+                    isClosable: true,
+                    position: "top",
+                });
+                return;
+            }
+
+            const userToken = user.token;
             try {
                 const config = {
                     headers: {
