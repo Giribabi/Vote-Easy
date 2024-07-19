@@ -27,6 +27,10 @@
     flex-direction: row;
     justify-content: flex-end;
 }
+.otp-button-box {
+    display: inline-flex !important;
+    width: 104px !important;
+}
 .auth-btn {
     justify-content: space-between;
 }

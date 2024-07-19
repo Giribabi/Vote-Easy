@@ -5,6 +5,8 @@ import {
     FormControl,
     FormLabel,
     Input,
+    InputGroup,
+    InputRightElement,
     useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +17,9 @@ import { ArrowBackIcon, ArrowForwardIcon, ArrowUpIcon } from "@chakra-ui/icons";
 function Auth() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [otp, setOtp] = useState("");
+    const [hash, setHash] = useState("");
+    const [otpLoading, setOtpLoading] = useState(false);
     const [isLogin, setIsLogin] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -30,16 +35,53 @@ function Auth() {
         navigate("/vote");
     };
 
-    const handleSubmit = async (e) => {
-        setIsLoading(true);
+    const sendOtp = async () => {
+        setOtpLoading(true);
+        const config = {
+            header: {
+                "Content-type": "application/json",
+            },
+        };
+        try {
+            const { data } = await axios.post(
+                `${backendUrl}/api/auth/send-otp`,
+                {
+                    email,
+                },
+                config
+            );
+            // console.log(data);
+            setHash(data.secret);
+            setOtpLoading(false);
+        } catch (error) {
+            handleError(error);
+        }
+    };
 
-        e.preventDefault();
+    const verifyOtp = async () => {
+        const config = {
+            header: {
+                "Content-type": "application/json",
+            },
+        };
+        await axios.post(
+            `${backendUrl}/api/auth/verify-otp`,
+            {
+                otp,
+                hash,
+            },
+            config
+        );
+    };
+
+    const authenticaton = async () => {
         try {
             const config = {
                 header: {
                     "Content-type": "application/json",
                 },
             };
+            verifyOtp();
             if (isLogin) {
                 const { data } = await axios.post(
                     `${backendUrl}/api/auth/login`,
@@ -71,22 +113,35 @@ function Auth() {
                 isClosable: true,
                 position: "top",
             });
-
             setProgress(2);
             handleContinue();
         } catch (error) {
-            console.log(error);
-            setIsLoading(false);
-            toast({
-                title: isLogin
-                    ? "Check your login credentials"
-                    : "Error in registration",
-                status: "warning",
-                duration: "3000",
-                isClosable: true,
-                position: "top",
-            });
+            handleError(error);
         }
+    };
+
+    const handleError = (error) => {
+        console.log(error);
+        const errorHtml = error.response.data;
+        const errorBodyStart = errorHtml.indexOf("<pre>");
+        const errorBodyEnd = errorHtml.indexOf("<br>");
+        const errorMessage = errorHtml.substring(
+            errorBodyStart + 12,
+            errorBodyEnd
+        );
+        toast({
+            title: errorMessage,
+            status: "warning",
+            duration: "3000",
+            isClosable: true,
+            position: "top",
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        setIsLoading(true);
+        e.preventDefault();
+        authenticaton();
     };
 
     return (
@@ -110,6 +165,27 @@ function Auth() {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </FormControl>
+                        <FormControl isRequired mt={4}>
+                            <FormLabel>Enter OTP</FormLabel>
+                            <InputGroup>
+                                <InputRightElement className="otp-button-box">
+                                    <Button
+                                        h="38px"
+                                        w="104px"
+                                        isLoading={otpLoading}
+                                        isDisabled={!email}
+                                        onClick={sendOtp}
+                                    >
+                                        Send OTP
+                                    </Button>
+                                </InputRightElement>
+                                <Input
+                                    type="password"
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value)}
+                                />
+                            </InputGroup>
+                        </FormControl>
                         <div className="continue-btn auth-btn">
                             <Button
                                 rightIcon={<ArrowUpIcon />}
@@ -121,7 +197,7 @@ function Auth() {
                                 onClick={() => setIsLogin(false)}
                                 isDisabled={isLoading && isLogin}
                             >
-                                Signup
+                                {"Verify & Signup"}
                             </Button>
                             <Button
                                 rightIcon={<ArrowForwardIcon />}
@@ -133,7 +209,7 @@ function Auth() {
                                 onClick={() => setIsLogin(true)}
                                 isDisabled={isLoading && !isLogin}
                             >
-                                Login
+                                {"Verify & Login"}
                             </Button>
                         </div>
                     </form>
