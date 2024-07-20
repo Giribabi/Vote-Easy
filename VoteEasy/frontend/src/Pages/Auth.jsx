@@ -20,6 +20,9 @@ function Auth() {
     const [otp, setOtp] = useState("");
     const [hash, setHash] = useState("");
     const [otpLoading, setOtpLoading] = useState(false);
+    const [otpVerifying, setOtpVerifying] = useState(false);
+    const [emailVerified, setEmailVerified] = useState(false);
+
     const [isLogin, setIsLogin] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -53,25 +56,52 @@ function Auth() {
             // console.log(data);
             setHash(data.secret);
             setOtpLoading(false);
+            toast({
+                title: "OTP sent",
+                status: "success",
+                duration: "3000",
+                isClosable: true,
+                position: "top",
+            });
         } catch (error) {
             handleError(error);
         }
     };
 
     const verifyOtp = async () => {
+        setOtpVerifying(true);
         const config = {
             header: {
                 "Content-type": "application/json",
             },
         };
-        await axios.post(
-            `${backendUrl}/api/auth/verify-otp`,
-            {
-                otp,
-                hash,
-            },
-            config
-        );
+        try {
+            await axios.post(
+                `${backendUrl}/api/auth/verify-otp`,
+                {
+                    otp,
+                    hash,
+                },
+                config
+            );
+            setEmailVerified(true);
+            toast({
+                title: "Email Verified",
+                status: "success",
+                duration: "3000",
+                isClosable: true,
+                position: "top",
+            });
+        } catch (error) {
+            toast({
+                title: "Invalid OTP",
+                status: "warning",
+                duration: "3000",
+                isClosable: true,
+                position: "top",
+            });
+        }
+        setOtpVerifying(false);
     };
 
     const authenticaton = async () => {
@@ -81,8 +111,7 @@ function Auth() {
                     "Content-type": "application/json",
                 },
             };
-            verifyOtp();
-            if (isLogin) {
+            if (isLogin && emailVerified) {
                 const { data } = await axios.post(
                     `${backendUrl}/api/auth/login`,
                     {
@@ -92,7 +121,7 @@ function Auth() {
                     config
                 );
                 localStorage.setItem("userInfo", JSON.stringify(data));
-            } else {
+            } else if (emailVerified) {
                 const { data } = await axios.post(
                     `${backendUrl}/api/auth/signup`,
                     {
@@ -103,7 +132,6 @@ function Auth() {
                 );
                 localStorage.setItem("userInfo", JSON.stringify(data));
             }
-            setIsLoading(false);
             toast({
                 title: isLogin
                     ? "Successfully Logged in"
@@ -123,8 +151,8 @@ function Auth() {
     const handleError = (error) => {
         console.log(error);
         const errorHtml = error.response.data;
-        const errorBodyStart = errorHtml.indexOf("<pre>");
-        const errorBodyEnd = errorHtml.indexOf("<br>");
+        const errorBodyStart = errorHtml.indexOf("<body>");
+        const errorBodyEnd = errorHtml.indexOf("<pre>");
         const errorMessage = errorHtml.substring(
             errorBodyStart + 12,
             errorBodyEnd
@@ -141,7 +169,18 @@ function Auth() {
     const handleSubmit = async (e) => {
         setIsLoading(true);
         e.preventDefault();
-        authenticaton();
+        if (emailVerified) {
+            authenticaton();
+        } else {
+            toast({
+                title: "Complete email verification",
+                status: "warning",
+                duration: "3000",
+                isClosable: true,
+                position: "top",
+            });
+        }
+        setIsLoading(false);
     };
 
     return (
@@ -166,17 +205,30 @@ function Auth() {
                             />
                         </FormControl>
                         <FormControl isRequired mt={4}>
-                            <FormLabel>Enter OTP</FormLabel>
+                            <FormLabel className="otp-field-box">
+                                <Button
+                                    className="send-otp-button"
+                                    colorScheme="green"
+                                    isLoading={otpLoading}
+                                    isDisabled={!email}
+                                    onClick={sendOtp}
+                                >
+                                    Send OTP
+                                </Button>
+                                <span className="otp-caption">
+                                    Set loader like timer Expires in 30 seconds
+                                </span>
+                            </FormLabel>
                             <InputGroup>
                                 <InputRightElement className="otp-button-box">
                                     <Button
                                         h="38px"
                                         w="104px"
-                                        isLoading={otpLoading}
-                                        isDisabled={!email}
-                                        onClick={sendOtp}
+                                        isLoading={otpVerifying}
+                                        isDisabled={!otp}
+                                        onClick={verifyOtp}
                                     >
-                                        Send OTP
+                                        Verify OTP
                                     </Button>
                                 </InputRightElement>
                                 <Input
@@ -195,9 +247,11 @@ function Auth() {
                                 isLoading={isLoading && !isLogin}
                                 loadingText="Signup"
                                 onClick={() => setIsLogin(false)}
-                                isDisabled={isLoading && isLogin}
+                                isDisabled={
+                                    (isLoading && isLogin) || !emailVerified
+                                }
                             >
-                                {"Verify & Signup"}
+                                {"Signup"}
                             </Button>
                             <Button
                                 rightIcon={<ArrowForwardIcon />}
@@ -207,9 +261,11 @@ function Auth() {
                                 isLoading={isLoading && isLogin}
                                 loadingText="Login"
                                 onClick={() => setIsLogin(true)}
-                                isDisabled={isLoading && !isLogin}
+                                isDisabled={
+                                    (isLoading && !isLogin) || !emailVerified
+                                }
                             >
-                                {"Verify & Login"}
+                                {"Login"}
                             </Button>
                         </div>
                     </form>

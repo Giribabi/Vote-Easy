@@ -74,7 +74,6 @@ const sendOtp = asyncHandler(async (req, res) => {
             subject: "VoteEasy OTP Code",
             text: `Your OTP code is: ${otp}`,
         };
-
         transporter.sendMail(mailOptions);
         res.json({ message: "OTP sent", secret: secret.base32 });
     } catch (error) {

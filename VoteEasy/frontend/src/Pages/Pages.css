@@ -39,9 +39,25 @@
     flex-direction: row;
     justify-content: flex-end;
 }
+.otp-field-box {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    /* background-color: red; */
+}
+.otp-caption {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    padding: 0px 8px;
+}
 .otp-button-box {
     display: inline-flex !important;
     width: 104px !important;
+}
+.send-otp-button {
+    width: 100% !important;
 }
 .auth-btn {
     justify-content: space-between;
