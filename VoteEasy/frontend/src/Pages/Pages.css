@@ -40,6 +40,7 @@
     justify-content: flex-end;
 }
 .otp-field-box {
+    padding-top: 5px !important;
     display: flex !important;
     flex-direction: row !important;
     justify-content: center !important;
@@ -47,10 +48,13 @@
 }
 .otp-caption {
     display: inline-flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     white-space: nowrap;
     padding: 0px 8px;
+    position: relative;
+    bottom: 5px;
 }
 .otp-button-box {
     display: inline-flex !important;

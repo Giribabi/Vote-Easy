@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Pages.css";
 import {
     Button,
@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { StatusContext } from "../Context/Context";
 import { ArrowBackIcon, ArrowForwardIcon, ArrowUpIcon } from "@chakra-ui/icons";
+import Timer from "../Components/Timer/Timer";
 
 function Auth() {
     const [email, setEmail] = useState("");
@@ -20,6 +21,7 @@ function Auth() {
     const [otp, setOtp] = useState("");
     const [hash, setHash] = useState("");
     const [otpLoading, setOtpLoading] = useState(false);
+    const [timerStarted, setTimerStarted] = useState(false);
     const [otpVerifying, setOtpVerifying] = useState(false);
     const [emailVerified, setEmailVerified] = useState(false);
 
@@ -63,6 +65,7 @@ function Auth() {
                 isClosable: true,
                 position: "top",
             });
+            setTimerStarted(true);
         } catch (error) {
             handleError(error);
         }
@@ -183,6 +186,21 @@ function Auth() {
         setIsLoading(false);
     };
 
+    useEffect(() => {
+        if (timerStarted) {
+            setTimeout(() => {
+                setTimerStarted(false);
+                toast({
+                    title: "Timer elapsed",
+                    status: "warning",
+                    duration: "3000",
+                    isClosable: true,
+                    position: "top",
+                });
+            }, 30000);
+        }
+    }, [timerStarted]);
+
     return (
         <div className="page">
             <div className="auth">
@@ -216,7 +234,15 @@ function Auth() {
                                     Send OTP
                                 </Button>
                                 <span className="otp-caption">
-                                    Set loader like timer Expires in 30 seconds
+                                    <span>{"(Expires in 30 seconds)"}</span>
+                                    <span
+                                        style={{
+                                            width: "100%",
+                                            height: "10px",
+                                        }}
+                                    >
+                                        {timerStarted && <Timer />}
+                                    </span>
                                 </span>
                             </FormLabel>
                             <InputGroup>
