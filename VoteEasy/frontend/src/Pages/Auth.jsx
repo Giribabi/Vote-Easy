@@ -10,14 +10,15 @@ import {
     useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { StatusContext } from "../Context/Context";
+import { authenticaton, sendOtp, verifyOtp } from "../Utils/AuthUtils";
 import { ArrowBackIcon, ArrowForwardIcon, ArrowUpIcon } from "@chakra-ui/icons";
 import Timer from "../Components/Timer/Timer";
 
 function Auth() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
     const [otp, setOtp] = useState("");
     const [hash, setHash] = useState("");
     const [otpLoading, setOtpLoading] = useState(false);
@@ -40,140 +41,20 @@ function Auth() {
         navigate("/vote");
     };
 
-    const sendOtp = async () => {
-        setOtpLoading(true);
-        const config = {
-            header: {
-                "Content-type": "application/json",
-            },
-        };
-        try {
-            const { data } = await axios.post(
-                `${backendUrl}/api/auth/send-otp`,
-                {
-                    email,
-                },
-                config
-            );
-            // console.log(data);
-            setHash(data.secret);
-            setOtpLoading(false);
-            toast({
-                title: "OTP sent",
-                status: "success",
-                duration: "3000",
-                isClosable: true,
-                position: "top",
-            });
-            setTimerStarted(true);
-        } catch (error) {
-            handleError(error);
-        }
-    };
-
-    const verifyOtp = async () => {
-        setOtpVerifying(true);
-        const config = {
-            header: {
-                "Content-type": "application/json",
-            },
-        };
-        try {
-            await axios.post(
-                `${backendUrl}/api/auth/verify-otp`,
-                {
-                    otp,
-                    hash,
-                },
-                config
-            );
-            setEmailVerified(true);
-            toast({
-                title: "Email Verified",
-                status: "success",
-                duration: "3000",
-                isClosable: true,
-                position: "top",
-            });
-        } catch (error) {
-            toast({
-                title: "Invalid OTP",
-                status: "warning",
-                duration: "3000",
-                isClosable: true,
-                position: "top",
-            });
-        }
-        setOtpVerifying(false);
-    };
-
-    const authenticaton = async () => {
-        try {
-            const config = {
-                header: {
-                    "Content-type": "application/json",
-                },
-            };
-            if (isLogin && emailVerified) {
-                const { data } = await axios.post(
-                    `${backendUrl}/api/auth/login`,
-                    {
-                        email,
-                        password,
-                    },
-                    config
-                );
-                localStorage.setItem("userInfo", JSON.stringify(data));
-            } else if (emailVerified) {
-                const { data } = await axios.post(
-                    `${backendUrl}/api/auth/signup`,
-                    {
-                        email,
-                        password,
-                    },
-                    config
-                );
-                localStorage.setItem("userInfo", JSON.stringify(data));
-            }
-            toast({
-                title: isLogin
-                    ? "Successfully Logged in"
-                    : "Successfully registered",
-                status: "success",
-                duration: "3000",
-                isClosable: true,
-                position: "top",
-            });
-            setProgress(2);
-            handleContinue();
-        } catch (error) {
-            handleError(error);
-        }
-    };
-
-    const handleError = (error) => {
-        console.log(error);
-        const errorHtml = error.response.data;
-        const errorBodyStart = errorHtml.indexOf("<body>");
-        const errorBodyEnd = errorHtml.indexOf("<pre>");
-        const errorMessage = errorHtml.substring(
-            errorBodyStart + 12,
-            errorBodyEnd
-        );
-        toast({
-            title: errorMessage,
-            status: "warning",
-            duration: "3000",
-            isClosable: true,
-            position: "top",
-        });
-    };
-
     const handleSubmit = async (e) => {
         setIsLoading(true);
         e.preventDefault();
         if (emailVerified) {
-            authenticaton();
+            authenticaton(
+                isLogin,
+                emailVerified,
+                email,
+                password,
+                backendUrl,
+                setProgress,
+                handleContinue,
+                toast
+            );
         } else {
             toast({
                 title: "Complete email verification",
@@ -189,17 +70,19 @@ function Auth() {
     useEffect(() => {
         if (timerStarted) {
             setTimeout(() => {
+                if (!timerStarted) {
+                    toast({
+                        title: "Timer elapsed",
+                        status: "warning",
+                        duration: "3000",
+                        isClosable: true,
+                        position: "top",
+                    });
+                }
                 setTimerStarted(false);
-                toast({
-                    title: "Timer elapsed",
-                    status: "warning",
-                    duration: "3000",
-                    isClosable: true,
-                    position: "top",
-                });
             }, 30000);
         }
-    }, [timerStarted]);
+    }, [timerStarted, toast]);
 
     return (
         <div className="page">
@@ -229,7 +112,16 @@ function Auth() {
                                     colorScheme="green"
                                     isLoading={otpLoading}
                                     isDisabled={!email}
-                                    onClick={sendOtp}
+                                    onClick={() =>
+                                        sendOtp(
+                                            email,
+                                            backendUrl,
+                                            setHash,
+                                            setOtpLoading,
+                                            setTimerStarted,
+                                            toast
+                                        )
+                                    }
                                 >
                                     Send OTP
                                 </Button>
@@ -252,7 +144,17 @@ function Auth() {
                                         w="104px"
                                         isLoading={otpVerifying}
                                         isDisabled={!otp}
-                                        onClick={verifyOtp}
+                                        onClick={() =>
+                                            verifyOtp(
+                                                otp,
+                                                hash,
+                                                backendUrl,
+                                                setEmailVerified,
+                                                setOtpVerifying,
+                                                setTimerStarted,
+                                                toast
+                                            )
+                                        }
                                     >
                                         Verify OTP
                                     </Button>
