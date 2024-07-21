@@ -38,6 +38,7 @@ function Results() {
             isClosable: true,
             position: "top",
         });
+        navigate("/");
     };
 
     return (
