@@ -50,10 +50,9 @@ async function connectDB() {
         const connection = await mongoose.connect(
             `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@cluster0.dhfzlml.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
         );
+        console.log("Successfully connected to MongoDB");
     } catch (err) {
         console.log(`Error: ${err.message}`);
-    } finally {
-        console.log("Successfully connected to MongoDB");
     }
 }
 connectDB();
@@ -62,8 +61,8 @@ app.use("/api/auth", userRoutes);
 app.use("/api/candidate", candidateRoutes);
 app.use("/api/vote", protect, voteRoutes);
 
-// app.use("/", (req, res) => {
-//     res.send("This is your VoteEasy server..");
-// });
+app.use("/", (req, res) => {
+    res.send("This is Giribabi's VoteEasy server..");
+});
 
 app.listen(3030);
