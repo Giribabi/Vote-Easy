@@ -72,9 +72,6 @@ function Header() {
 
                         <Box flexShrink="0">
                             <StepTitle>{step.title}</StepTitle>
-                            <StepDescription>
-                                {step.description}
-                            </StepDescription>
                         </Box>
 
                         <StepSeparator />

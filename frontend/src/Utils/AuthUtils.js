@@ -33,7 +33,13 @@ export const sendOtp = async (
         });
         setTimerStarted(true);
     } catch (error) {
-        handleError(error, toast);
+        toast({
+            title: "Unable to send OTP",
+            status: "warning",
+            duration: "3000",
+            isClosable: true,
+            position: "top",
+        });
     }
 };
 
@@ -70,6 +76,7 @@ export const verifyOtp = async (
             position: "top",
         });
     } catch (error) {
+        console.log(error);
         toast({
             title: "Invalid OTP",
             status: "warning",
@@ -92,6 +99,16 @@ export const authenticaton = async (
     handleContinue,
     toast
 ) => {
+    if (password.length < 8) {
+        toast({
+            title: "Password must be atleast 8 characters",
+            status: "warning",
+            duration: "3000",
+            isClosable: true,
+            position: "top",
+        });
+        return;
+    }
     try {
         const config = {
             header: {
@@ -131,21 +148,13 @@ export const authenticaton = async (
         setProgress(2);
         handleContinue();
     } catch (error) {
-        handleError(error, toast);
+        console.log(error);
+        toast({
+            title: error.response.data.message,
+            status: "warning",
+            duration: "3000",
+            isClosable: true,
+            position: "top",
+        });
     }
-};
-
-export const handleError = (error, toast) => {
-    console.log(error);
-    const errorHtml = error.response.data;
-    const errorBodyStart = errorHtml.indexOf("<body>");
-    const errorBodyEnd = errorHtml.indexOf("<pre>");
-    const errorMessage = errorHtml.substring(errorBodyStart + 12, errorBodyEnd);
-    toast({
-        title: errorMessage,
-        status: "warning",
-        duration: "3000",
-        isClosable: true,
-        position: "top",
-    });
 };

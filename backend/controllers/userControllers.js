@@ -14,23 +14,16 @@ const authUser = asyncHandler(async (req, res) => {
             token: generateToken(currentUser._id),
         });
     } else {
-        res.status(401);
-        throw new Error("Check your login credentials");
+        res.status(401).json({ message: "Check your login credentials" });
     }
 });
 
 const registerUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const userExists = await User.findOne({ email });
-    if (!email || !password) {
-        res.status(400);
-        throw new Error("Enter all the fields");
-    } else if (userExists) {
-        res.status(400);
-        throw new Error("User exists");
-    } else if (password.length < 8) {
-        res.status(400);
-        throw new Error("Password is less than 8 characters");
+    if (userExists) {
+        res.status(400).json({ message: "User exists already!" });
+        return;
     }
     const newUser = await User.create({
         email,
@@ -44,8 +37,9 @@ const registerUser = asyncHandler(async (req, res) => {
             token: generateToken(newUser._id),
         });
     } else {
-        res.status(400);
-        throw new Error("Failed to create user");
+        res.status(400).json({
+            message: "Failed to create user",
+        });
     }
 });
 
